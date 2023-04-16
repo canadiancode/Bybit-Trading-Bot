@@ -1,3 +1,5 @@
+    // this is for not using tradingview at all
+ 
     // NODE.JS PACKAGES INSTALLED USING NPM
 
 // dotenv : allows us to hide API credentials
@@ -45,8 +47,8 @@ async function fetchPublicBybitData(url) {
 
     // CREATE ON BYBIT ORDER FUNCTION -- CREATE ON BYBIT ORDER FUNCTION -- CREATE ON BYBIT ORDER FUNCTION
 
-const apiKey = process.env.SITE_GENERATED_API_KEY;
-const apiSign = process.env.SITE_GENERATED_API_SECRET;
+const apiKey = process.env.BYBIT_API_KEY;
+const apiSign = process.env.BYBIT_API_SECRET;
 const timestamp = Date.now();
 const recvWindow = '5000'; // used to define a time window for the request to be processed by the server to protection against request replay attacks
 
