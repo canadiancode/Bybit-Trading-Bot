@@ -102,21 +102,6 @@ async function postOrderEntry() {
 
     savedParentOrderId = orderLinkId;
 
-    // // Get unfilled Order List
-    // endpoint="/unified/v3/private/order/unfilled-orders"
-    // var data = 'symbol=BTCUSDT&category=linear&orderStatus=New&orderLinkId=' + orderLinkId;
-    // await http_request(endpoint,"GET",data,"Unfilled Order List");
-
-    // // Get Order List
-    // endpoint="/unified/v3/private/order/list"
-    // var data = 'symbol=BTCUSDT&category=linear&orderStatus=New&orderLinkId=' + orderLinkId ;
-    // await http_request(endpoint,"GET",data,"Order List");
-
-    // // Cancel order
-    // endpoint="/unified/v3/private/order/cancel"
-    // var data = '{"symbol": "BTCUSDT","category":"linear","orderLinkId":"' +  orderLinkId +'"}';
-    // await http_request(endpoint,"POST",data,"Cancel");
-
 };
 // postOrderEntry();
 
@@ -134,4 +119,4 @@ async function closePosition() {
     savedParentOrderId = '';
 
 };
-closePosition();
+// closePosition();
