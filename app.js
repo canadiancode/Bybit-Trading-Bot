@@ -1,12 +1,13 @@
     // This is for recieving the webhook alert from tradingview
 
-    // installed NPM packages
+    // installed NPM packages:
 // express: web application framework 
 // body-parser: parse incoming JSON payloads
 // sudo -g ngrok: sets up link to remote access apps
 // axios: promised based HTTPS requests 
 
 require('dotenv').config();
+
 
     // GET PRICE FEED -- GET PRICE FEED -- GET PRICE FEED -- GET PRICE FEED
 
@@ -15,6 +16,7 @@ const webSocketEndpoint = 'wss://stream.bybit.com/contract/usdt/public/v3';
 const ws = new WebSocket(webSocketEndpoint);
 
 ws.on('open', () => {
+
     console.log('WebSocket connection established');
 
     // Subscribe to the kline channel for BTCUSD with a 1-second interval
@@ -25,13 +27,20 @@ ws.on('open', () => {
 });
 
 let currentBitcoinPrice = '';
+let timestamp = Date.now().toString();
+console.log(`Date now() timestamp: ${timestamp}`);
 ws.on('message', (data) => {
 
   currentBitcoinPrice = JSON.parse(data);
 
   if (currentBitcoinPrice.topic && currentBitcoinPrice.topic.startsWith('kline.1.BTCUSDT')) {
-  const klineData = currentBitcoinPrice.data[0];
-  console.log(`BTCUSD Price: ${klineData.close}`);
+    
+    const klineData = currentBitcoinPrice.data[0];
+    console.log(`Bitcoin Price: ${klineData.close}`);
+
+    timestamp = klineData.timestamp;
+    console.log(`Current timestamp value: ${timestamp}`);
+
   } else {
   console.log('Received data:', currentBitcoinPrice);
   }
@@ -45,11 +54,10 @@ ws.on('close', (code, reason) => {
   console.log(`WebSocket connection closed: ${code} - ${reason}`);
 });
 
+    // CREATE WEBHOOK URL -- CREATE WEBHOOK URL -- CREATE WEBHOOK URL
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
-    // CREATE WEBHOOK URL -- CREATE WEBHOOK URL -- CREATE WEBHOOK URL
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -57,10 +65,20 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.post('/webhook', (req, res) => {
-  console.log('TradingView alert received:', req.body);
 
-  // Add custom logic to handle the alert here
-  // For example, you can send a notification, execute a trade, etc.
+  console.log('TradingView alert received:', req.body);
+  const comment = req.body.comment;
+
+  if (comment === 'Long') {
+    console.log('Going Long!')
+    postLongOrderEntry();
+  } else if (comment === 'Short') {
+    console.log('Going Short!')
+    postShortOrderEntry();
+  } else {
+    console.log('Exiting Position!')
+    closePosition();
+  };
 
   res.sendStatus(200);
 });
@@ -72,8 +90,9 @@ app.listen(port, () => {
 // open two terminals
 // On one, run 'node app.js'
 // on the other run 'ngrok http 3000' & copy the https link adding the /webhook at the end to tradingview
+// the comment on Tradingview should be formatted like so: { "comment": "{{strategy.order.comment}}" }
 
-// link from ngrok:
+// link from ngrok (example):
 //  https://9b92-2001-569-5904-9d00-75ba-1ffa-754f-4d7b.ngrok.io/webhook
 
 
@@ -87,13 +106,15 @@ url = 'https://api.bybit.com';
 var apiKey = process.env.BYBIT_API_KEY;
 var secret = process.env.BYBIT_API_SECRET;
 var recvWindow = 5000;
-var timestamp = Date.now().toString();
 
 function getSignature(parameters, secret) {
+  console.log(`Timestamp when getting the signature: ${timestamp}`);
   return crypto.createHmac('sha256', secret).update(timestamp + apiKey + recvWindow + parameters).digest('hex');
 };
 
 async function http_request(endpoint,method,data,Info) {
+
+  console.log(`Timestamp when submitting the http_request: ${timestamp}`);
 
   var sign=getSignature(data,secret);
   if(method=="POST") {
@@ -116,7 +137,9 @@ async function http_request(endpoint,method,data,Info) {
     },
     data : data
   };
+  
   console.log(Info + " Calling....");
+
   await axios(config)
   .then(function (response) {
     console.log(JSON.stringify(response.data));
@@ -131,32 +154,53 @@ async function http_request(endpoint,method,data,Info) {
 
 let savedParentOrderId = '';
 
-async function postOrderEntry() {
+async function postLongOrderEntry() {
 
   // Create Order endpoint
   endpoint = "/contract/v3/private/copytrading/order/create"
   const orderLinkId = crypto.randomBytes(16).toString("hex");
 
   // Limit Sell/Buy order:
-  // var data = '{"symbol":"BTCUSDT","orderType":"Limit","side":"Sell","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"30000","timeInForce":"GoodTillCancel","position_idx":"1"}';
+  // var data = '{"symbol":"BTCUSDT","orderType":"Limit","side":"Buy","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
 
-  // Market Buy/Sell order:
+  // Market Buy order:
   var data = '{"symbol":"BTCUSDT","orderType":"Market","side":"Buy","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
   await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
   console.log(`The created order ID: ${savedParentOrderId}`);
+  console.log(`Timestamp of the long order: ${timestamp}`);
 
 };
-// postOrderEntry();
+// postLongOrderEntry();
+
+async function postShortOrderEntry() {
+
+  // Create Order endpoint
+  endpoint = "/contract/v3/private/copytrading/order/create"
+  const orderLinkId = crypto.randomBytes(16).toString("hex");
+
+  // Limit Sell/Buy order:
+  // var data = '{"symbol":"BTCUSDT","orderType":"Limit","side":"Sell","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
+
+  // Market Sell order:
+  var data = '{"symbol":"BTCUSDT","orderType":"Market","side":"Sell","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
+  await http_request(endpoint,"POST",data,"Create");
+
+  savedParentOrderId = orderLinkId;
+  console.log(`The created order ID: ${savedParentOrderId}`);
+  console.log(`Timestamp of the short order: ${timestamp}`);
+
+};
+// postShortOrderEntry();
 
 
   // CLOSE POSITION -- CLOSE POSITION -- CLOSE POSITION
 
 async function closePosition() {
 
-  // copy & paste ID here when stopping & running the code at a later point:
-  // savedParentOrderId = '';
+  // copy & paste ID here when stopping & manually running the code:
+  // savedParentOrderId = 'fef4f09525c8aa12ddcb7c8b3b6d9818';
 
   // close order endpoint
   endpoint = "/contract/v3/private/copytrading/order/close"
@@ -164,6 +208,8 @@ async function closePosition() {
   // var data = '{"symbol":"BTCUSDT", "parentOrderId":"' +  savedParentOrderId + '"}';
   var data = '{"symbol":"BTCUSDT","parentOrderLinkId":"' +  savedParentOrderId + '"}'
   await http_request(endpoint,"POST",data,"Create");
+
+  console.log(`Timestamp of the order closing: ${timestamp}`);
 
 };
 // closePosition();
