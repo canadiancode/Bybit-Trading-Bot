@@ -3,7 +3,7 @@
     // installed NPM packages:
 // express: web application framework 
 // body-parser: parse incoming JSON payloads
-// sudo -g ngrok: sets up link to remote access apps
+// sudo -g ngrok: sets up link to remote access apps for testing 
 // axios: promised based HTTPS requests 
 
 require('dotenv').config();
@@ -28,17 +28,19 @@ ws.on('open', () => {
 
 let currentBitcoinPrice = '';
 let timestamp = Date.now().toString();
+
 console.log(`Date now() timestamp: ${timestamp}`);
 ws.on('message', (data) => {
 
-  currentBitcoinPrice = JSON.parse(data);
+  let bitcoinObject = JSON.parse(data);
 
-  if (currentBitcoinPrice.topic && currentBitcoinPrice.topic.startsWith('kline.1.BTCUSDT')) {
+  if (bitcoinObject.topic && bitcoinObject.topic.startsWith('kline.1.BTCUSDT')) {
     
-    const klineData = currentBitcoinPrice.data[0];
+    const klineData = bitcoinObject.data[0];
     console.log(`Bitcoin Price: ${klineData.close}`);
 
     timestamp = klineData.timestamp;
+    currentBitcoinPrice = klineData.close;
     console.log(`Current timestamp value: ${timestamp}`);
 
   } else {
@@ -109,6 +111,7 @@ var recvWindow = 5000;
 
 function getSignature(parameters, secret) {
   console.log(`Timestamp when getting the signature: ${timestamp}`);
+  console.log(`The params within the getSignature function: ${parameters}`)
   return crypto.createHmac('sha256', secret).update(timestamp + apiKey + recvWindow + parameters).digest('hex');
 };
 
@@ -168,6 +171,7 @@ async function postLongOrderEntry() {
   await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
+  console.log(`Price of Bitcoin when longing: ${currentBitcoinPrice}`);
   console.log(`The created order ID: ${savedParentOrderId}`);
   console.log(`Timestamp of the long order: ${timestamp}`);
 
@@ -188,6 +192,8 @@ async function postShortOrderEntry() {
   await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
+
+  console.log(`Price of Bitcoin when shorting: ${currentBitcoinPrice}`);
   console.log(`The created order ID: ${savedParentOrderId}`);
   console.log(`Timestamp of the short order: ${timestamp}`);
 
