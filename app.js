@@ -41,7 +41,6 @@ ws.on('message', (data) => {
 
     timestamp = klineData.timestamp;
     currentBitcoinPrice = klineData.close;
-    console.log(`Current timestamp value: ${timestamp}`);
 
   } else {
   console.log('Received data:', currentBitcoinPrice);
@@ -110,14 +109,10 @@ var secret = process.env.BYBIT_API_SECRET;
 var recvWindow = 5000;
 
 function getSignature(parameters, secret) {
-  console.log(`Timestamp when getting the signature: ${timestamp}`);
-  console.log(`The params within the getSignature function: ${parameters}`)
   return crypto.createHmac('sha256', secret).update(timestamp + apiKey + recvWindow + parameters).digest('hex');
 };
 
 async function http_request(endpoint,method,data,Info) {
-
-  console.log(`Timestamp when submitting the http_request: ${timestamp}`);
 
   var sign=getSignature(data,secret);
   if(method=="POST") {
@@ -171,9 +166,6 @@ async function postLongOrderEntry() {
   await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
-  console.log(`Price of Bitcoin when longing: ${currentBitcoinPrice}`);
-  console.log(`The created order ID: ${savedParentOrderId}`);
-  console.log(`Timestamp of the long order: ${timestamp}`);
 
 };
 // postLongOrderEntry();
@@ -193,10 +185,6 @@ async function postShortOrderEntry() {
 
   savedParentOrderId = orderLinkId;
 
-  console.log(`Price of Bitcoin when shorting: ${currentBitcoinPrice}`);
-  console.log(`The created order ID: ${savedParentOrderId}`);
-  console.log(`Timestamp of the short order: ${timestamp}`);
-
 };
 // postShortOrderEntry();
 
@@ -214,8 +202,6 @@ async function closePosition() {
   // var data = '{"symbol":"BTCUSDT", "parentOrderId":"' +  savedParentOrderId + '"}';
   var data = '{"symbol":"BTCUSDT","parentOrderLinkId":"' +  savedParentOrderId + '"}'
   await http_request(endpoint,"POST",data,"Create");
-
-  console.log(`Timestamp of the order closing: ${timestamp}`);
 
 };
 // closePosition();
