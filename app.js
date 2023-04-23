@@ -1,5 +1,7 @@
     // This is for recieving the webhook alert from tradingview
 
+  // Heroku webhook URL: https://your-app-name.herokuapp.com/webhook
+
     // installed NPM packages:
 // express: web application framework 
 // body-parser: parse incoming JSON payloads
@@ -88,13 +90,10 @@ app.listen(port, () => {
   console.log(`TradingView webhook listener is running on port ${port}`);
 });
 
-// open two terminals
+// for testing purposes, open two terminals
 // On one, run 'node app.js'
-// on the other run 'ngrok http 3000' & copy the https link adding the /webhook at the end to tradingview
+// On the other run 'ngrok http 3000' & copy the https link adding the /webhook at the end to tradingview
 // the comment on Tradingview should be formatted like so: { "comment": "{{strategy.order.comment}}" }
-
-// link from ngrok (example):
-//  https://9b92-2001-569-5904-9d00-75ba-1ffa-754f-4d7b.ngrok.io/webhook
 
 
     // POST ORDER TO BYBIT -- POST ORDER TO BYBIT -- POST ORDER TO BYBIT
