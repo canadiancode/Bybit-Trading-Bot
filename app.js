@@ -98,6 +98,9 @@ app.listen(port, () => {
     // POST ORDER TO BYBIT -- POST ORDER TO BYBIT -- POST ORDER TO BYBIT
 
 const url = require('url');
+const crypto = require('crypto');
+const axios = require('axios');
+
 // Configure axios to use the QuotaGuard Static proxy
 if (process.env.QUOTAGUARDSTATIC_URL) {
   const proxyUrl = url.parse(process.env.QUOTAGUARDSTATIC_URL);
@@ -110,9 +113,6 @@ if (process.env.QUOTAGUARDSTATIC_URL) {
     },
   };
 }
-
-const crypto = require('crypto');
-const axios = require('axios');
 
 url = 'https://api.bybit.com';
 
