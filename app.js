@@ -5,8 +5,8 @@
     // installed NPM packages:
 // express: web application framework 
 // body-parser: parse incoming JSON payloads
-// sudo -g ngrok: sets up link to remote access apps for testing 
 // axios: promised based HTTPS requests 
+// sudo -g ngrok: sets up link to remote access apps for testing 
 
 require('dotenv').config();
 
