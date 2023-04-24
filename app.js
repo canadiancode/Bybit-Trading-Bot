@@ -134,6 +134,10 @@ async function http_request(endpoint,method,data,Info) {
     data="";
   }
 
+  // Add the proxy configuration
+  const proxyURL = process.env.QUOTAGUARDSTATIC_URL;
+  const proxyConfig = proxyURL ? quotaGuardUrl.parse(proxyURL) : null;
+
   var config = {
     method: method,
     url: fullendpoint,
@@ -145,7 +149,8 @@ async function http_request(endpoint,method,data,Info) {
       'X-BAPI-RECV-WINDOW': '5000', 
       'Content-Type': 'application/json; charset=utf-8'
     },
-    data : data
+    data : data ? JSON.stringify(JSON.parse(data)) : "",
+    proxy: proxyConfig,
   };
   
   console.log(Info + " Calling....");
