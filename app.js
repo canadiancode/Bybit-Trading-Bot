@@ -97,13 +97,13 @@ app.listen(port, () => {
 
     // POST ORDER TO BYBIT -- POST ORDER TO BYBIT -- POST ORDER TO BYBIT
 
-const url = require('url');
+const quotaGuardUrl = require('url');
 const crypto = require('crypto');
 const axios = require('axios');
 
 // Configure axios to use the QuotaGuard Static proxy
 if (process.env.QUOTAGUARDSTATIC_URL) {
-  const proxyUrl = url.parse(process.env.QUOTAGUARDSTATIC_URL);
+  const proxyUrl = quotaGuardUrl.parse(process.env.QUOTAGUARDSTATIC_URL);
   axios.defaults.proxy = {
     host: proxyUrl.hostname,
     port: proxyUrl.port,
