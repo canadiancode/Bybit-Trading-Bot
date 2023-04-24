@@ -1,11 +1,10 @@
-    // This is for recieving the webhook alert from tradingview
-
-  // Heroku webhook URL: https://your-app-name.herokuapp.com/webhook
+// Heroku webhook URL to add into Tradingview: https://performante-bybit-bot.herokuapp.com/webhook
 
     // installed NPM packages:
 // express: web application framework 
 // body-parser: parse incoming JSON payloads
 // axios: promised based HTTPS requests 
+// url: helps with parsing the proxy URL for setting up QuotaGuard Static IP
 // sudo -g ngrok: sets up link to remote access apps for testing 
 
 require('dotenv').config();
@@ -97,6 +96,20 @@ app.listen(port, () => {
 
 
     // POST ORDER TO BYBIT -- POST ORDER TO BYBIT -- POST ORDER TO BYBIT
+
+const url = require('url');
+// Configure axios to use the QuotaGuard Static proxy
+if (process.env.QUOTAGUARDSTATIC_URL) {
+  const proxyUrl = url.parse(process.env.QUOTAGUARDSTATIC_URL);
+  axios.defaults.proxy = {
+    host: proxyUrl.hostname,
+    port: proxyUrl.port,
+    auth: {
+      username: proxyUrl.username,
+      password: proxyUrl.password,
+    },
+  };
+}
 
 const crypto = require('crypto');
 const axios = require('axios');
