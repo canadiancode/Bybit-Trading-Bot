@@ -1,4 +1,4 @@
-// Heroku webhook URL to add into Tradingview: https://performante-bybit-bot.herokuapp.com/webhook
+// Heroku webhook URL to add into Tradingview: https://pcc-crab-market-bot.herokuapp.com/webhook
 
     // installed NPM packages:
 // express: web application framework 
