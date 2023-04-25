@@ -1,7 +1,10 @@
 // Heroku webhook URL to add into Tradingview: https://pcc-crab-market-bot.herokuapp.com/webhook
 
     // installed NPM packages:
+// dotenv: pull info from .env file
 // express: web application framework 
+// ws: web socket 
+// node-fetch: fetch API for node
 // body-parser: parse incoming JSON payloads
 // axios: promised based HTTPS requests 
 // url: helps with parsing the proxy URL for setting up QuotaGuard Static IP

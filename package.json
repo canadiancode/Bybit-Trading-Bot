@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/canadiancode/Bybit-Trading-Bot.git"
+    "url": "git+https://github.com/canadiancode/pcc-crab-market-bot.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/canadiancode/Bybit-Trading-Bot/issues"
+    "url": "https://github.com/canadiancode/pcc-crab-market-bot/issues"
   },
-  "homepage": "https://github.com/canadiancode/Bybit-Trading-Bot#readme",
+  "homepage": "https://github.com/canadiancode/pcc-crab-market-bot#readme",
   "dependencies": {
     "@pxtrn/bybit-api": "^1.1.5",
     "axios": "^1.3.5",
@@ -25,9 +25,6 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "node-fetch": "^3.3.1",
-    "ta-lib": "^0.11.0",
-    "talib": "^1.1.5",
-    "technicalindicators": "^3.1.0",
     "url": "^0.11.0",
     "ws": "^8.13.0"
   }
