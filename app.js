@@ -177,7 +177,7 @@ async function postLongOrderEntry() {
 
   // Create Order endpoint
   endpoint = "/contract/v3/private/copytrading/order/create"
-  const orderLinkId = crypto.randomBytes(16).toString("hex");
+  let orderLinkId = crypto.randomBytes(16).toString("hex");
 
   // Limit Sell/Buy order:
   // var data = '{"symbol":"BTCUSDT","orderType":"Limit","side":"Buy","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
@@ -195,7 +195,7 @@ async function postShortOrderEntry() {
 
   // Create Order endpoint
   endpoint = "/contract/v3/private/copytrading/order/create"
-  const orderLinkId = crypto.randomBytes(16).toString("hex");
+  let orderLinkId = crypto.randomBytes(16).toString("hex");
 
   // Limit Sell/Buy order:
   // var data = '{"symbol":"BTCUSDT","orderType":"Limit","side":"Sell","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
