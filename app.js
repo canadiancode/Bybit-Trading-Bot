@@ -224,9 +224,6 @@ async function postLongOrderEntry() {
   endpoint = "/contract/v3/private/copytrading/order/create"
   let orderLinkId = crypto.randomBytes(16).toString("hex");
 
-  // Limit Sell/Buy order:
-  // var data = '{"symbol":"BTCUSDT","orderType":"Limit","side":"Buy","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
-
   // Market Buy order:
   var data = '{"symbol":"BTCUSDT","orderType":"Market","side":"Buy","orderLinkId":"' +  orderLinkId + '","qty":"' +  positionSize + '","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
   await http_request(endpoint,"POST",data,"Create");
@@ -248,9 +245,6 @@ async function postShortOrderEntry() {
   // Create Order endpoint
   endpoint = "/contract/v3/private/copytrading/order/create"
   let orderLinkId = crypto.randomBytes(16).toString("hex");
-
-  // Limit Sell/Buy order:
-  // var data = '{"symbol":"BTCUSDT","orderType":"Limit","side":"Sell","orderLinkId":"' +  orderLinkId + '","qty":"0.001","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
 
   // Market Sell order:
   var data = '{"symbol":"BTCUSDT","orderType":"Market","side":"Sell","orderLinkId":"' +  orderLinkId + '","qty":"' +  positionSize + '","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
