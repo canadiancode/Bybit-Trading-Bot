@@ -166,7 +166,45 @@ async function http_request(endpoint,method,data,Info) {
   .catch(function (error) {
     console.log(error);
   });
+};
 
+// Fetch Wallet Balance
+let currentWalletBalance = 0;
+async function walletBalance(endpoint, method, data, Info) {
+
+  var sign = getSignature(data, secret);
+  let fullendpoint = url + endpoint;
+
+  // Add the proxy configuration
+  const proxyURL = process.env.QUOTAGUARDSTATIC_URL;
+  const proxyConfig = proxyURL ? quotaGuardUrl.parse(proxyURL) : null;
+
+  var config = {
+    method: method,
+    url: fullendpoint,
+    headers: { 
+      'X-BAPI-SIGN-TYPE': '2', 
+      'X-BAPI-SIGN': sign, 
+      'X-BAPI-API-KEY': apiKey, 
+      'X-BAPI-TIMESTAMP': timestamp, 
+      'X-BAPI-RECV-WINDOW': '5000', 
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    // params: data,
+    proxy: proxyConfig,
+  };
+
+  console.log(Info + " Calling....");
+
+  await axios(config)
+  .then(function (response) {
+    currentWalletBalance = response.data.result.availableBalance
+    console.log(`Current wallet balance is ${currentWalletBalance} USDT.`);
+
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 };
 
   // CREATE ORDER --  CREATE ORDER -- CREATE ORDER
@@ -174,6 +212,13 @@ async function http_request(endpoint,method,data,Info) {
 let savedParentOrderId = '';
 
 async function postLongOrderEntry() {
+
+  // Fetch Wallet Balance:
+  var walletEndpoint = "/contract/v3/private/copytrading/wallet/balance";
+  const walletParams = '';
+  await walletBalance(walletEndpoint, "GET", walletParams, "Balance");
+  let positionSize = (currentWalletBalance / currentBitcoinPrice) * 1.4;
+  console.log(`Position size is ${positionSize}.`);
 
   // Create Order endpoint
   endpoint = "/contract/v3/private/copytrading/order/create"
@@ -187,11 +232,17 @@ async function postLongOrderEntry() {
   await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
-
 };
 // postLongOrderEntry();
 
 async function postShortOrderEntry() {
+
+  // Fetch Wallet Balance:
+  var walletEndpoint = "/contract/v3/private/copytrading/wallet/balance";
+  const walletParams = '';
+  await walletBalance(walletEndpoint, "GET", walletParams, "Balance");
+  let positionSize = (currentWalletBalance / currentBitcoinPrice) * 1.4;
+  console.log(`Position size is ${positionSize}.`);
 
   // Create Order endpoint
   endpoint = "/contract/v3/private/copytrading/order/create"
@@ -205,7 +256,6 @@ async function postShortOrderEntry() {
   await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
-
 };
 // postShortOrderEntry();
 
@@ -219,10 +269,7 @@ async function closePosition() {
 
   // close order endpoint
   endpoint = "/contract/v3/private/copytrading/order/close"
-
-  // var data = '{"symbol":"BTCUSDT", "parentOrderId":"' +  savedParentOrderId + '"}';
   var data = '{"symbol":"BTCUSDT","parentOrderLinkId":"' +  savedParentOrderId + '"}'
   await http_request(endpoint,"POST",data,"Create");
-
 };
 // closePosition();
