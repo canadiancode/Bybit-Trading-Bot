@@ -233,7 +233,7 @@ async function postLongOrderEntry() {
 
   savedParentOrderId = orderLinkId;
 };
-setTimeout(postLongOrderEntry, 3000);
+// setTimeout(postLongOrderEntry, 3000);
 
 async function postShortOrderEntry() {
 
