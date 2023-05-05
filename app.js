@@ -34,7 +34,6 @@ ws.on('open', () => {
 let currentBitcoinPrice = '';
 let timestamp = Date.now().toString();
 
-console.log(`Date now() timestamp: ${timestamp}`);
 ws.on('message', (data) => {
 
   let bitcoinObject = JSON.parse(data);
@@ -229,11 +228,11 @@ async function postLongOrderEntry() {
 
   // Market Buy order:
   var data = '{"symbol":"BTCUSDT","orderType":"Market","side":"Buy","orderLinkId":"' +  orderLinkId + '","qty":"0.024","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
-  await http_request(endpoint,"POST",data,"Create");
+  // await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
 };
-// postLongOrderEntry();
+setTimeout(postLongOrderEntry, 3000);
 
 async function postShortOrderEntry() {
 
