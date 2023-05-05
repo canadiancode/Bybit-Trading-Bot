@@ -229,7 +229,7 @@ async function postLongOrderEntry() {
 
   // Market Buy order:
   var data = '{"symbol":"BTCUSDT","orderType":"Market","side":"Buy","orderLinkId":"' +  orderLinkId + '","qty":"' +  positionSize + '","price":"' +  currentBitcoinPrice + '","timeInForce":"GoodTillCancel","position_idx":"1"}';
-  // await http_request(endpoint,"POST",data,"Create");
+  await http_request(endpoint,"POST",data,"Create");
 
   savedParentOrderId = orderLinkId;
 };
