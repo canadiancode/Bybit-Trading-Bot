@@ -18,6 +18,9 @@ require('dotenv').config();
 
 const WebSocket = require('ws');
 
+let currentBitcoinPrice = '';
+let timestamp = Date.now().toString();
+
 function connectWebSocket() {
 
   const webSocketEndpoint = 'wss://stream.bybit.com/contract/usdt/public/v3';
@@ -34,9 +37,6 @@ function connectWebSocket() {
     }));
 
   });
-
-  let currentBitcoinPrice = '';
-  let timestamp = Date.now().toString();
 
   ws.on('message', (data) => {
 
@@ -64,7 +64,7 @@ function connectWebSocket() {
     setTimeout(() => {
       console.log('Reconnecting WebSocket...');
       connectWebSocket();
-    }, 500); // Reconnect after a 5-second delay
+    }, 500);
   });
 
 };
