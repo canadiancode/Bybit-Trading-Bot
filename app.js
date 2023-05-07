@@ -17,10 +17,13 @@ require('dotenv').config();
     // GET PRICE FEED -- GET PRICE FEED -- GET PRICE FEED -- GET PRICE FEED
 
 const WebSocket = require('ws');
-const webSocketEndpoint = 'wss://stream.bybit.com/contract/usdt/public/v3';
-const ws = new WebSocket(webSocketEndpoint);
 
-ws.on('open', () => {
+function connectWebSocket() {
+
+  const webSocketEndpoint = 'wss://stream.bybit.com/contract/usdt/public/v3';
+  const ws = new WebSocket(webSocketEndpoint);
+
+  ws.on('open', () => {
 
     console.log('WebSocket connection established');
 
@@ -29,35 +32,43 @@ ws.on('open', () => {
     op: 'subscribe',
     args: ["kline.1.BTCUSDT"],
     }));
-});
 
-let currentBitcoinPrice = '';
-let timestamp = Date.now().toString();
+  });
 
-ws.on('message', (data) => {
+  let currentBitcoinPrice = '';
+  let timestamp = Date.now().toString();
 
-  let bitcoinObject = JSON.parse(data);
+  ws.on('message', (data) => {
 
-  if (bitcoinObject.topic && bitcoinObject.topic.startsWith('kline.1.BTCUSDT')) {
-    
-    const klineData = bitcoinObject.data[0];
-    console.log(`Bitcoin Price: ${klineData.close}`);
+    let bitcoinObject = JSON.parse(data);
 
-    timestamp = klineData.timestamp;
-    currentBitcoinPrice = klineData.close;
+    if (bitcoinObject.topic && bitcoinObject.topic.startsWith('kline.1.BTCUSDT')) {
+      
+      const klineData = bitcoinObject.data[0];
+      console.log(`Bitcoin Price: ${klineData.close}`);
 
-  } else {
-  console.log('Received data:', currentBitcoinPrice);
-  }
-});
+      timestamp = klineData.timestamp;
+      currentBitcoinPrice = klineData.close;
 
-ws.on('error', (error) => {
-  console.error('WebSocket error:', error);
-});
+    } else {
+    console.log('Received data:', currentBitcoinPrice);
+    }
+  });
 
-ws.on('close', (code, reason) => {
-  console.log(`WebSocket connection closed: ${code} - ${reason}`);
-});
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
+
+  ws.on('close', (code, reason) => {
+    console.log(`WebSocket connection closed: ${code} - ${reason}`);
+    setTimeout(() => {
+      console.log('Reconnecting WebSocket...');
+      connectWebSocket();
+    }, 500); // Reconnect after a 5-second delay
+  });
+
+};
+connectWebSocket();
 
     // CREATE WEBHOOK URL -- CREATE WEBHOOK URL -- CREATE WEBHOOK URL
 
