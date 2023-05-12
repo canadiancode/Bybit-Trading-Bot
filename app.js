@@ -8,8 +8,6 @@
 // body-parser: parse incoming JSON payloads
 // axios: promised based HTTPS requests 
 // url: helps with parsing the proxy URL for setting up QuotaGuard Static IP
-// crypto: cryptography for API POST requets
-// https: make promised based https requests 
 
 // sudo -g ngrok: sets up link to remote access apps for testing 
 
